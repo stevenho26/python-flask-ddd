@@ -7,7 +7,6 @@ This project is a demonstration of Clean Architecture principles applied to a Py
 ### Key Features:
 - **Clean Architecture**: Incorporates a decoupled architecture that separates core business logic from interface and infrastructure concerns. This separation enhances maintainability and allows for independent development and testing of each layer.
 - **Domain-Driven Design (DDD)**: Focuses on complex domain logic centralizing the business logic in the domain layer. This approach facilitates a deeper understanding and management of the domain model which is particularly beneficial for complex applications.
-- **Docker Integration**: Utilizes Docker to encapsulate the application environment, ensuring that it runs uniformly across different setups. Docker simplifies dependencies management and aligns development environments to production configurations.
 - **SQL Database**: Employs a SQL database to manage application data, providing robust, reliable, and scalable data storage solutions.
 - **ORM Tool**: Uses an Object-Relational Mapping (ORM) tool to abstract database interactions, simplifying data manipulation and ensuring database agnosticism. This abstraction allows developers to focus more on the domain logic rather than database specifics.
 
@@ -16,7 +15,6 @@ This project is a demonstration of Clean Architecture principles applied to a Py
 - **Flask**: A lightweight WSGI web application framework in Python that provides tools, libraries, and technologies to build a web application.
 - **SQLAlchemy**: An ORM and SQL toolkit for Python that provides a full power and flexibility of SQL.
 - **MySQL/PostgreSQL**: Supported SQL databases that provide reliable backends for storing persistent data of the application.
-- **Docker**: A set of platform as a service products that use OS-level virtualization to deliver software in packages called containers.
 
 ## Environment Setup
 
@@ -25,7 +23,6 @@ This project is a demonstration of Clean Architecture principles applied to a Py
 - Python 3.8+
 - pip
 - virtualenv (optional)
-- Docker
 
 ### Installation
 
@@ -48,14 +45,13 @@ This project is a demonstration of Clean Architecture principles applied to a Py
     ```bash
    pip install -r requirements.txt
    ```
-4. **Docker Configuration:**
+4. **Database Setup:**
 
-- Ensure you have Docker and Docker Compose installed.
-- Launch the services:
-
-   ```bash  
-   docker-compose up -d
-   ```
+   - Ensure you have a MySQL server running locally.
+   - Create the database and tables using `init.sql`:
+     ```bash
+     mysql -u root -p < init.sql
+     ```
 
 
 ### Usage
