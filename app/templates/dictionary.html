@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu Từ điển Tiếng Việt</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                brand: '#4f46e5',
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        /* Custom styles for dictionary content */
+        .definition-content {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #334155;
+        }
+        .definition-content b { font-weight: 700; color: #1e293b; }
+        .definition-content font[color="blue"] { color: #2563eb !important; }
+        .definition-content font[color="red"] { color: #dc2626 !important; }
+        .definition-content font[color="green"] { color: #16a34a !important; }
+        /* Fix the white text in the raw data */
+        .definition-content font[color="white"] { 
+            color: #94a3b8 !important; 
+            font-size: 0.8em; 
+            font-style: italic; 
+        }
+        /* Style separating lines if any */
+        .definition-content hr { margin: 1rem 0; border-color: #e2e8f0; }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <svg class="w-8 h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900">Vi-Vi Dict</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <!-- <a href="/" class="text-slate-500 hover:text-brand font-medium">Trang chủ</a> -->
+                <a href="/dictionary" class="text-brand font-medium">Từ điển</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-7xl">
+        
+        <!-- Search Section -->
+        <div class="max-w-3xl mx-auto mb-10">
+            <form action="/dictionary" method="GET" class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-6 w-6 text-gray-400 group-focus-within:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <input type="text" name="q" value="{{ keyword }}" 
+                    class="block w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-xl shadow-sm text-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all" 
+                    placeholder="Nhập từ cần tra cứu..." autofocus autocomplete="off">
+                <button type="submit" class="absolute inset-y-2 right-2 px-6 py-2 bg-brand text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+                    Tìm kiếm
+                </button>
+            </form>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Sidebar: Word List -->
+            <div class="lg:col-span-4 xl:col-span-3">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden sticky top-24 max-h-[calc(100vh-120px)] flex flex-col">
+                    <div class="px-5 py-3 border-b border-gray-50 bg-gray-50 flex justify-between items-center">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Từ gợi ý</span>
+                        <span class="text-xs text-gray-400">{{ results|length }} kết quả</span>
+                    </div>
+                    
+                    <div class="overflow-y-auto flex-1 p-2 space-y-1 custom-scrollbar">
+                        {% if results %}
+                            {% for item in results %}
+                            <a href="/dictionary?q={{ item.word }}" 
+                               class="block px-4 py-2.5 rounded-lg text-sm transition-all duration-200
+                               {{ 'bg-indigo-50 text-brand font-bold border-l-4 border-brand pl-3' if item.word == keyword else 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:pl-5' }}">
+                                {{ item.word }}
+                            </a>
+                            {% endfor %}
+                        {% else %}
+                            <div class="p-8 text-center text-gray-400">
+                                {% if keyword %}
+                                    <p>Không tìm thấy từ này.</p>
+                                {% else %}
+                                    <p>Danh sách từ sẽ hiện ở đây.</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content: Definition -->
+            <div class="lg:col-span-8 xl:col-span-9 min-h-[400px]">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 lg:p-10 h-full">
+                    
+                    {% if definition %}
+                        <div class="border-b border-gray-100 pb-6 mb-6">
+                            <h1 class="text-4xl font-bold text-slate-800 mb-2">{{ keyword }}</h1>
+                            <div class="flex items-center space-x-2 text-sm text-gray-400">
+                                <span class="bg-gray-100 px-2 py-0.5 rounded text-xs uppercase tracking-wide">Tiếng Việt</span>
+                            </div>
+                        </div>
+
+                        <!-- Content Render -->
+                        <div class="definition-content prose prose-lg prose-indigo max-w-none">
+                            {{ definition|safe }}
+                        </div>
+
+                    {% elif keyword %}
+                       <!-- No definition found state -->
+                        <div class="flex flex-col items-center justify-center h-64 text-center">
+                             <div class="bg-gray-50 p-4 rounded-full mb-4">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                             </div>
+                             <h3 class="text-xl font-medium text-gray-900 mb-1">Không có định nghĩa</h3>
+                             <p class="text-gray-500 max-w-sm">Chúng tôi không tìm thấy định nghĩa cho từ "<b>{{ keyword }}</b>". Hãy thử chọn từ ở danh sách bên cạnh.</p>
+                        </div>
+
+                    {% else %}
+                        <!-- Empty state -->
+                         <div class="flex flex-col items-center justify-center h-full text-center py-20">
+                            <div class="w-32 h-32 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
+                                <svg class="w-16 h-16 text-brand opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">Chào mừng bạn!</h2>
+                            <p class="text-gray-500 max-w-md">Nhập từ khóa vào ô tìm kiếm hoặc chọn từ danh sách để xem định nghĩa chi tiết từ bộ dữ liệu Tiếng Việt.</p>
+                         </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-100 mt-auto py-8">
+        <div class="container mx-auto px-4 text-center text-gray-400 text-sm">
+            <p>&copy; 2026 Vi-Vi Dictionary Project. Powered by Flask & StarDict.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

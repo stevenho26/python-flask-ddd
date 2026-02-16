@@ -50,13 +50,5 @@ class BookRepository:
             return None
 
     def list_all(self):
-        try:
-            book_dtos = BookDTO.query.all()
-            print(book_dtos)
-        except SQLAlchemyError as e:
-            logging.error(f"Database error occurred: {e}")  # Logs the error
-            return {'status': 'error', 'message': 'Failed to fetch books due to a database error'}
-        except Exception as e:
-            logging.error(f"Unexpected error occurred in repository: {e}")  # Captures any other unexpected error
-            return {'status': 'error', 'message': 'An unexpected error occurred'}
+        book_dtos = BookDTO.query.all()
         return [BookMapper.to_domain(book_dto) for book_dto in book_dtos]

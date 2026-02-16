@@ -1,5 +1,7 @@
 from flask import Flask
 from application.ports.http_api import init_app
+from application.ports.web_dictionary import init_web_dictionary
+from application.ports.demo_rhymes import init_rhyme_demo
 from infrastructure.database import init_db
 
 def create_app():
@@ -8,6 +10,8 @@ def create_app():
 
     init_db(app)  # Initialize the database here
     init_app(app)  # Initialize other parts of the application
+    init_web_dictionary(app)
+    init_rhyme_demo(app)
 
     return app
 
